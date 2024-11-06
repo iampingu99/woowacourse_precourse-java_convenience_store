@@ -29,6 +29,14 @@ public class Product {
                 promotion);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
     private String formattedPrice() {
         NumberFormat formatter = NumberFormat.getInstance();
         return formatter.format(price) + "원";

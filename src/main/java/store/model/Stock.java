@@ -10,6 +10,13 @@ public class Stock {
         this.products = products;
     }
 
+    public int calcProductQuantity(String productName) {
+        return products.stream()
+                .filter(product -> productName.equals(product.getName()))
+                .mapToInt(Product::getQuantity)
+                .sum();
+    }
+
     @Override
     public String toString() {
         return products.stream()
