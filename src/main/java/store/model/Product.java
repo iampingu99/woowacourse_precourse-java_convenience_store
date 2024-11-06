@@ -29,10 +29,28 @@ public class Product {
                 promotion);
     }
 
+    private String formattedPrice() {
+        NumberFormat formatter = NumberFormat.getInstance();
+        return formatter.format(price) + "원";
+    }
+
+    private String formattedQuantity() {
+        if (quantity == 0) {
+            return "재고 없음";
+        }
+        return quantity + "개";
+    }
+
+    private String formattedPromotion() {
+        if (promotion == null) {
+            return "";
+        }
+        return promotion;
+    }
+
     @Override
     public String toString() {
-        NumberFormat numberFormat = NumberFormat.getInstance();
-        return "- " + name + " " + numberFormat.format(price) + "원 " + quantity + "개 " + promotion;
+        return String.join(" ", "-", name, formattedPrice(), formattedQuantity(), formattedPromotion());
     }
 
     @Override

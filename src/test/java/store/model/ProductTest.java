@@ -12,8 +12,10 @@ class ProductTest {
     @DisplayName("상품 출력")
     void print_product() {
         assertSimpleTest(() -> {
-            Product product = Product.from("콜라,1000,10,탄산2+1");
-            assertThat(product.toString()).contains("- 콜라 1,000원 10개 탄산2+1");
+            Product promotion = Product.from("콜라,1000,10,탄산2+1");
+            Product regular = Product.from("콜라,1000,10,null");
+            assertThat(promotion.toString()).contains("- 콜라 1,000원 10개 탄산2+1");
+            assertThat(regular.toString()).contains("- 콜라 1,000원 10개");
         });
     }
 }
