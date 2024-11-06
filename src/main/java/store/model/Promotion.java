@@ -1,6 +1,7 @@
 package store.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Promotion {
     private final String name;
@@ -25,5 +26,21 @@ public class Promotion {
                 Integer.parseInt(fields[2]),
                 LocalDate.parse(fields[3]),
                 LocalDate.parse(fields[4]));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Promotion promotion)) {
+            return false;
+        }
+        return Objects.equals(name, promotion.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
