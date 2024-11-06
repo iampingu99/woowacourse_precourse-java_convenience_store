@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import store.model.Product;
 import store.model.Promotion;
 
 public class StoreRepository {
@@ -21,5 +22,18 @@ public class StoreRepository {
             System.out.println("파일을 읽는 중 오류가 발생했습니다: " + e.getMessage());
         }
         return promotions;
+    }
+
+    public List<Product> getProducts() {
+        List<Product> products = new ArrayList<>();
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("products.md");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        ) {
+            String format = reader.readLine();
+            reader.lines().forEach(line -> products.add(Product.from(line)));
+        } catch (IOException e) {
+            System.out.println("파일을 읽는 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        return products;
     }
 }
