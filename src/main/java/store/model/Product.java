@@ -1,5 +1,6 @@
 package store.model;
 
+import java.text.NumberFormat;
 import java.util.Objects;
 
 public class Product {
@@ -26,6 +27,12 @@ public class Product {
                 Integer.parseInt(fields[1]),
                 Integer.parseInt(fields[2]),
                 promotion);
+    }
+
+    @Override
+    public String toString() {
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        return "- " + name + " " + numberFormat.format(price) + "원 " + quantity + "개 " + promotion;
     }
 
     @Override
