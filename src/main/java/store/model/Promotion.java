@@ -16,4 +16,14 @@ public class Promotion {
         this.start_date = start_date;
         this.end_date = end_date;
     }
+
+    public static Promotion of(String record) {
+        String[] fields = record.split(",");
+        return new Promotion(
+                fields[0],
+                Integer.parseInt(fields[1]),
+                Integer.parseInt(fields[2]),
+                LocalDate.parse(fields[3]),
+                LocalDate.parse(fields[4]));
+    }
 }
