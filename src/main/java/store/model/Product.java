@@ -37,6 +37,10 @@ public class Product {
         return quantity;
     }
 
+    public String getPromotion() {
+        return promotion;
+    }
+
     private String formattedPrice() {
         NumberFormat formatter = NumberFormat.getInstance();
         return formatter.format(price) + "원";

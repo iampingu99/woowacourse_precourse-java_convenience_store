@@ -17,6 +17,13 @@ public class Stock {
                 .sum();
     }
 
+    public int calcPromotionQuantity(String productName) {
+        return products.stream()
+                .filter(product -> productName.equals(product.getName()) && product.getPromotion() != null)
+                .mapToInt(Product::getQuantity)
+                .findFirst().orElse(0);
+    }
+
     @Override
     public String toString() {
         return products.stream()
