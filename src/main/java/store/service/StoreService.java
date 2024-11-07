@@ -18,6 +18,10 @@ public class StoreService {
         List<OrderItem> orders = createOrder(input);
         for (OrderItem item : orders) {
             List<Product> products = isExistProduct(item.name());
+            int totalCount = products.stream().mapToInt(Product::getQuantity).sum();
+            if (totalCount < item.quantity()) {
+                throw new RuntimeException("재고 수량을 초과하여 구매할 수 없습니다.");
+            }
         }
     }
 

@@ -10,6 +10,9 @@ public class InputView {
             System.out.println("구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
             try {
                 String input = Console.readLine();
+                if (input.equals("N")) {
+                    return;
+                }
                 StoreService service = new StoreService();
                 service.run(input);
                 System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
@@ -18,7 +21,7 @@ public class InputView {
                     return;
                 }
             } catch (Exception e) {
-                System.out.println("[ERROR] " + e.getMessage() + "다시 입력 해주세요.");
+                System.out.println("[ERROR] " + e.getMessage() + " 다시 입력해 주세요.");
             }
         }
     }
