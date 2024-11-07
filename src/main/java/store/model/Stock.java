@@ -10,6 +10,16 @@ public class Stock {
         this.products = products;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public List<Product> getProductByName(String productName) {
+        return products.stream()
+                .filter(product -> product.getName().equals(productName))
+                .toList();
+    }
+
     public int calcProductQuantity(String productName) {
         return products.stream()
                 .filter(product -> productName.equals(product.getName()))

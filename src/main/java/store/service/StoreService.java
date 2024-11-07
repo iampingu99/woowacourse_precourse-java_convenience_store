@@ -2,6 +2,7 @@ package store.service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import store.model.OrderItem;
 import store.model.Product;
 import store.model.Stock;
@@ -24,8 +25,21 @@ public class StoreService {
             List<Product> products = isExistProduct(item.name());
             int totalCount = products.stream().mapToInt(Product::getQuantity).sum();
             if (totalCount < item.quantity()) {
-                throw new RuntimeException("재고 수량을 초과하여 구매할 수 없습니다.");
+                throw new RuntimeException("재고 수량을 초과하여 구매할 수 없습니다." + totalCount + " : " + item.quantity());
             }
+            purchase(products, item);
+        }
+    }
+
+    public void purchase(List<Product> products, OrderItem item) {
+        Product regularProduct = products.stream()
+                .filter(product -> product.getName().equals(item.name()) && product.getPromotion() == null)
+                .findFirst().get();
+        Optional<Product> promotionProduct = products.stream()
+                .filter(product -> product.getName().equals(item.name()) && product.getPromotion() != null)
+                .findFirst();
+        if (promotionProduct.isEmpty()) {
+            regularProduct.purchase(item.quantity());
         }
     }
 

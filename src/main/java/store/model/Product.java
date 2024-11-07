@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Product {
     private final String name;
     private final int price;
-    private final int quantity;
+    private int quantity;
     private final String promotion;
 
     public Product(String name, int price, int quantity, String promotion) {
@@ -39,6 +39,14 @@ public class Product {
 
     public String getPromotion() {
         return promotion;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void purchase(int quantity) {
+        this.quantity -= quantity;
     }
 
     private String formattedPrice() {
