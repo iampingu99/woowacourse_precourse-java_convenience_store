@@ -14,6 +14,10 @@ public class StoreService {
         this.stock = new Stock(new StoreRepository().getProducts());
     }
 
+    public Stock getStock() {
+        return stock;
+    }
+
     public void run(String input) {
         List<OrderItem> orders = createOrder(input);
         for (OrderItem item : orders) {
