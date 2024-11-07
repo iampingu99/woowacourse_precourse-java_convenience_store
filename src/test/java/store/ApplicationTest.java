@@ -68,6 +68,20 @@ class ApplicationTest extends NsTest {
         });
     }
 
+    @Test
+    void 구매할_상품과_수량_형식이_올바르지_않은_경우_예외가_발생한다() {
+        assertSimpleTest(() -> {
+            runException("[콜라-2],[사이다-]", "N", "N");
+            assertThat(output()).contains("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+            runException("[사이다-0]", "N", "N");
+            assertThat(output()).contains("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+            runException("[사이다- 2]", "N", "N");
+            assertThat(output()).contains("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+            runException("[사이다-2 ]", "N", "N");
+            assertThat(output()).contains("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+        });
+    }
+
     @Override
     public void runMain() {
         Application.main(new String[]{});
