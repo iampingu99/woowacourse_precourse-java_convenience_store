@@ -67,7 +67,9 @@ class StockTest {
     void calcProductQuantity() {
         assertSimpleTest(() -> {
             assertThat(stock.calcProductQuantity("콜라")).isEqualTo(20);
+            assertThat(stock.calcProductQuantity("사이다")).isEqualTo(15);
             assertThat(stock.calcProductQuantity("오렌지주스")).isEqualTo(9);
+            assertThat(stock.calcProductQuantity("탄산수")).isEqualTo(5);
             assertThat(stock.calcProductQuantity("물")).isEqualTo(10);
             assertThat(stock.calcProductQuantity("비타민워터")).isEqualTo(6);
             assertThat(stock.calcProductQuantity("감자칩")).isEqualTo(10);
@@ -75,6 +77,24 @@ class StockTest {
             assertThat(stock.calcProductQuantity("에너지바")).isEqualTo(5);
             assertThat(stock.calcProductQuantity("정식도시락")).isEqualTo(8);
             assertThat(stock.calcProductQuantity("컵라면")).isEqualTo(11);
+        });
+    }
+
+    @Test
+    @DisplayName("프로모션 재고 수량 계산")
+    void calcPromotionQuantity() {
+        assertSimpleTest(() -> {
+            assertThat(stock.calcPromotionQuantity("콜라")).isEqualTo(10);
+            assertThat(stock.calcPromotionQuantity("사이다")).isEqualTo(8);
+            assertThat(stock.calcPromotionQuantity("오렌지주스")).isEqualTo(9);
+            assertThat(stock.calcPromotionQuantity("탄산수")).isEqualTo(5);
+            assertThat(stock.calcPromotionQuantity("물")).isEqualTo(0);
+            assertThat(stock.calcPromotionQuantity("비타민워터")).isEqualTo(0);
+            assertThat(stock.calcPromotionQuantity("감자칩")).isEqualTo(5);
+            assertThat(stock.calcPromotionQuantity("초코바")).isEqualTo(5);
+            assertThat(stock.calcPromotionQuantity("에너지바")).isEqualTo(0);
+            assertThat(stock.calcPromotionQuantity("정식도시락")).isEqualTo(0);
+            assertThat(stock.calcPromotionQuantity("컵라면")).isEqualTo(1);
         });
     }
 }
