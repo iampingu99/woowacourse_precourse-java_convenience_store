@@ -24,6 +24,11 @@ public class InputView {
                 for (OrderItem orderItem : order) {
                     isExistProduct(orderItem.name());
                 }
+                System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
+                String exitInput = Console.readLine();
+                if (exitInput.equals("N")) {
+                    return;
+                }
             } catch (Exception e) {
                 System.out.println("[ERROR] " + e.getMessage() + "다시 입력 해주세요.");
             }
