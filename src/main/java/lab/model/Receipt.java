@@ -27,4 +27,8 @@ public class Receipt {
     public void calcTotalAmount() {
         totalAmount = orderItems.stream().mapToInt(o -> o.price() * o.quantity()).sum();
     }
+
+    public void calcPromotionDiscount() {
+        promotionDiscount = freeItems.stream().mapToInt(o -> o.price() * o.quantity()).sum();
+    }
 }
