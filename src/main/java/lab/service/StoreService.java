@@ -36,6 +36,17 @@ public class StoreService {
             Integer promotionStock = quantities.getOrDefault(ProductType.PROMOTION, null);
             if (promotionStock == null) { //일반 재고만 존재하는 경우
                 product.addQuantity(ProductType.REGULAR, item.quantity());
+            } else if (promotionStock > item.quantity()) {//프로모션 재고로 구매 가능한 경우
+                int promotionUnit = promotion.getBuy() + promotion.getGet();
+                if (item.quantity() % promotionUnit == promotion.getBuy()) {
+                    String confirm = confirm("현재 " + item.name() + "은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
+                    if (confirm.equals("Y")) {
+                        product.purchase(ProductType.PROMOTION, item.quantity() + 1);
+                    } else {
+                        product.purchase(ProductType.PROMOTION, item.quantity());
+                    }
+                }
+                product.addQuantity(ProductType.PROMOTION, promotionStock);
             }
         }
     }
