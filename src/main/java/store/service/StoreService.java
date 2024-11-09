@@ -1,18 +1,26 @@
 package store.service;
 
+import camp.nextstep.edu.missionutils.Console;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import store.model.OrderItem;
 import store.model.Product;
+import store.model.ProductType;
+import store.model.Promotion;
+import store.model.Quantity;
 import store.model.Stock;
 import store.repositroy.StoreRepository;
 
 public class StoreService {
     private final Stock stock;
+    private final List<Promotion> promotions;
 
     public StoreService() {
-        this.stock = new Stock(new StoreRepository().getProducts());
+        StoreRepository storeRepository = new StoreRepository();
+        this.stock = new Stock(storeRepository.getProducts());
+        this.promotions = storeRepository.getPromotions();
     }
 
     public Stock getStock() {
@@ -35,12 +43,41 @@ public class StoreService {
         Product regularProduct = products.stream()
                 .filter(product -> product.getName().equals(item.name()) && product.getPromotion() == null)
                 .findFirst().get();
-        Optional<Product> promotionProduct = products.stream()
+        Product promotionProduct = products.stream()
                 .filter(product -> product.getName().equals(item.name()) && product.getPromotion() != null)
-                .findFirst();
-        if (promotionProduct.isEmpty()) {
+                .findFirst().orElse(null);
+
+        //일반 재고만 존재하는 경우
+        if (promotionProduct == null) {
             regularProduct.purchase(item.quantity());
+            return;
         }
+
+        Map<ProductType, Integer> quantities = new HashMap<>();
+        quantities.put(ProductType.REGULAR, 50);
+        quantities.put(ProductType.PROMOTION, 20);
+        Quantity quantity = new Quantity(quantities);
+        quantity.getQuantity(ProductType.PROMOTION);
+
+        //
+        Promotion findPromotion = promotions.stream()
+                .filter(promotion -> promotion.getName().equals(promotionProduct.getName()))
+                .findFirst().get();
+        int promotionQuantity = promotionProduct.getQuantity();
+        if (promotionQuantity <= item.quantity()) {
+            int change = calculateNonPromotionQuantity(findPromotion, promotionQuantity, item.quantity());
+            System.out.println("현재 " + item.name() + " " + change + "개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
+            String input = Console.readLine();
+            if (input.equals("N")) {
+                promotionProduct.purchase(item.quantity());
+                regularProduct.purchase(item.quantity() - promotionQuantity);
+            }
+        }
+    }
+
+    private int calculateNonPromotionQuantity(Promotion promotion, int promotionQuantity, int buy) {
+        int promotionUnit = promotion.getBuy() + promotion.getGet();
+        return promotionQuantity % promotionUnit + buy - promotionQuantity;
     }
 
     public List<Product> isExistProduct(String productName) {
