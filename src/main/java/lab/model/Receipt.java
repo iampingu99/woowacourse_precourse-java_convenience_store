@@ -23,4 +23,8 @@ public class Receipt {
                 freeProductQuantity);
         freeItems.add(purchaseItem);
     }
+
+    public void calcTotalAmount() {
+        totalAmount = orderItems.stream().mapToInt(o -> o.price() * o.quantity()).sum();
+    }
 }
