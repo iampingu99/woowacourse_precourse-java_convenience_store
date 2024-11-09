@@ -9,6 +9,7 @@ import lab.model.OrderItem;
 import lab.model.Product;
 import lab.model.ProductType;
 import lab.model.Promotion;
+import lab.model.Receipt;
 import lab.model.Stock;
 import lab.repository.StoreRepository;
 
@@ -27,47 +28,72 @@ public class StoreService {
 
     public void run(String input) {
         List<OrderItem> orders = createOrder(input);
+        Receipt receipt = new Receipt();
         for (OrderItem item : orders) {
-            Product product = findProduct(item.name());
+            String purchaseName = item.name();
+            int purchaseAmount = item.quantity();
+
+            Product product = findProduct(purchaseName);
             Map<ProductType, Integer> quantities = product.getQuantities();
             Promotion promotion = product.getPromotion();
 
-            validateStock(quantities, item.quantity());
+            validateStock(quantities, purchaseAmount);
 
-            Integer promotionStock = quantities.getOrDefault(ProductType.PROMOTION, null);
-            if (promotionStock == null) { //일반 재고만 존재하는 경우
-                product.addQuantity(ProductType.REGULAR, item.quantity());
-            } else if (promotionStock > item.quantity()) {//프로모션 재고로 구매 가능한 경우
-                promotionPurchase(item, promotion, product, promotionStock);
-            } else { //일반 재고 + 프로모션 재고로 구매 가능한 경우
-                mixPurchase(item, promotion, promotionStock, product);
+            int promotionStock = quantities.getOrDefault(ProductType.PROMOTION, 0);
+            int purchasePromotionQuantity = getPurchasePromotionQuantity(item, promotionStock, product, receipt,
+                    promotion);
+            if (purchasePromotionQuantity > 0) {
+                receipt.addFreeItem(product, promotion, purchasePromotionQuantity);
             }
         }
+        System.out.println(receipt);
     }
 
-    private void promotionPurchase(OrderItem item, Promotion promotion, Product product, Integer promotionStock) {
+    private int getPurchasePromotionQuantity(OrderItem item, int promotionStock, Product product, Receipt receipt,
+                                             Promotion promotion) {
+        //일반 재고로만 구매 가능한 경우
+        if (promotionStock == 0) {
+            return regularPurchase(product, item, receipt);
+        }
+        //프로모션 재고로 구매 가능한 경우
+        if (promotionStock > item.quantity()) {
+            return promotionPurchase(receipt, item, promotion, product);
+        }
+        //일반 재고 + 프로모션 재고로 구매 가능한 경우
+        return mixPurchase(receipt, item, promotion, promotionStock, product);
+    }
+
+    private int regularPurchase(Product product, OrderItem item, Receipt receipt) {
+        product.addQuantity(ProductType.REGULAR, item.quantity()); //일반 재고만 존재하는 경우
+        receipt.purchase(product, ProductType.REGULAR, item.quantity());
+        return 0;
+    }
+
+    private int promotionPurchase(Receipt receipt, OrderItem item, Promotion promotion, Product product) {
         int promotionUnit = promotion.getBuy() + promotion.getGet();
         if (item.quantity() % promotionUnit == promotion.getBuy()) {
             String confirm = confirm("현재 " + item.name() + "은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
             if (confirm.equals("Y")) {
-                product.purchase(ProductType.PROMOTION, item.quantity() + 1);
-            } else {
-                product.purchase(ProductType.PROMOTION, item.quantity());
+                receipt.purchase(product, ProductType.PROMOTION, item.quantity() + 1);
+                return item.quantity() + 1;
             }
         }
-        product.addQuantity(ProductType.PROMOTION, promotionStock);
+        receipt.purchase(product, ProductType.PROMOTION, item.quantity());
+        return item.quantity();
     }
 
-    private void mixPurchase(OrderItem item, Promotion promotion, Integer promotionStock, Product product) {
+    private int mixPurchase(Receipt receipt, OrderItem item, Promotion promotion, Integer promotionStock,
+                            Product product) {
         int changeStock = calculateNonPromotionQuantity(promotion, promotionStock, item.quantity());
         String confirm = confirm(
                 "현재 " + item.name() + " " + changeStock + "개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
         if (confirm.equals("Y")) {
-            product.purchase(ProductType.PROMOTION, promotionStock);
-            product.purchase(ProductType.REGULAR, item.quantity() - promotionStock);
-        } else {
-            product.purchase(ProductType.PROMOTION, promotionStock);
+            receipt.purchase(product, ProductType.PROMOTION, promotionStock);
+            receipt.purchase(product, ProductType.REGULAR, item.quantity() - promotionStock);
+            return promotionStock - changeStock;
         }
+        receipt.purchase(product, ProductType.PROMOTION, item.quantity() - changeStock);
+        return promotionStock;
     }
 
     public String confirm(String str) {
@@ -96,7 +122,7 @@ public class StoreService {
     }
 
     private List<OrderItem> createOrder(String orders) {
-        return Arrays.stream(orders.split("\\[,]"))
+        return Arrays.stream(orders.split(","))
                 .map(OrderItem::from)
                 .toList();
     }
