@@ -47,6 +47,16 @@ public class StoreService {
                     }
                 }
                 product.addQuantity(ProductType.PROMOTION, promotionStock);
+            } else { //일반 재고 + 프로모션 재고로 구매 가능한 경우
+                int changeStock = calculateNonPromotionQuantity(promotion, promotionStock, item.quantity());
+                String confirm = confirm(
+                        "현재 " + item.name() + " " + changeStock + "개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
+                if (confirm.equals("Y")) {
+                    product.purchase(ProductType.PROMOTION, promotionStock);
+                    product.purchase(ProductType.REGULAR, item.quantity() - promotionStock);
+                } else {
+                    product.purchase(ProductType.PROMOTION, promotionStock);
+                }
             }
         }
     }
