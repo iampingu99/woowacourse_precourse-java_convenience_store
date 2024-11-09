@@ -16,4 +16,11 @@ public class Receipt {
         PurchaseItem purchaseItem = PurchaseItem.of(productType, product.getName(), product.getPrice(), quantity);
         orderItems.add(purchaseItem);
     }
+
+    public void addFreeItem(Product product, Promotion promotion, int purchasePromotionQuantity) {
+        int freeProductQuantity = purchasePromotionQuantity / (promotion.getBuy() + promotion.getGet());
+        PurchaseItem purchaseItem = PurchaseItem.of(ProductType.PROMOTION, product.getName(), product.getPrice(),
+                freeProductQuantity);
+        freeItems.add(purchaseItem);
+    }
 }
