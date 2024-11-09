@@ -32,7 +32,8 @@ public class StoreService {
             Map<ProductType, Integer> quantities = product.getQuantities();
             Promotion promotion = product.getPromotion();
 
-            int totalStock = findStock(product, item.quantity());
+            validateStock(quantities, item.quantity());
+
             Integer promotionStock = quantities.getOrDefault(ProductType.PROMOTION, null);
             if (promotionStock == null) { //일반 재고만 존재하는 경우
                 product.addQuantity(ProductType.REGULAR, item.quantity());
@@ -71,13 +72,11 @@ public class StoreService {
         return promotionQuantity % promotionUnit + buy - promotionQuantity;
     }
 
-    public int findStock(Product product, int purchaseQuantity) {
-        Map<ProductType, Integer> quantities = product.getQuantities();
+    private void validateStock(Map<ProductType, Integer> quantities, int purchaseQuantity) {
         int totalCount = quantities.values().stream().mapToInt(Integer::intValue).sum();
         if (totalCount < purchaseQuantity) {
-            throw new RuntimeException("재고 수량을 초과하여 구매할 수 없습니다." + totalCount + " : " + purchaseQuantity);
+            throw new RuntimeException("재고 수량을 초과하여 구매할 수 없습니다.");
         }
-        return totalCount;
     }
 
     public Product findProduct(String productName) {
