@@ -38,4 +38,8 @@ public class Receipt {
                 .mapToInt(o -> o.price() * o.quantity()).sum();
         membershipDiscount = Math.min(sum / 100 * 30, 8000);
     }
+
+    public void calcRealAmount() {
+        realAmount = totalAmount - promotionDiscount - membershipDiscount;
+    }
 }
