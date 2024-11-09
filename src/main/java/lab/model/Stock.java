@@ -2,6 +2,7 @@ package lab.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Stock {
     private final Map<String, Promotion> promotions;
@@ -30,4 +31,12 @@ public class Stock {
             product.setPromotion(promotion);
         }
     }
+
+    @Override
+    public String toString() {
+        return products.values().stream()
+                .map(Product::toString)
+                .collect(Collectors.joining("\n"));
+    }
 }
+

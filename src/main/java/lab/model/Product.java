@@ -1,7 +1,9 @@
 package lab.model;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Product {
     private final String name;
@@ -34,7 +36,39 @@ public class Product {
         quantities.put(productType, quantity);
     }
 
+    public void purchase(ProductType productType, int quantity) {
+        quantities.put(productType, quantities.get(productType) - quantity);
+    }
+
     public void setPromotion(Promotion promotion) {
         this.promotion = promotion;
+    }
+
+    private String formattedPrice() {
+        NumberFormat formatter = NumberFormat.getInstance();
+        return formatter.format(price) + "원";
+    }
+
+    private String formattedQuantity(int quantity) {
+        if (quantity == 0) {
+            return "재고 없음";
+        }
+        return quantity + "개";
+    }
+
+    private String formattedPromotion(ProductType productType) {
+        if (productType == ProductType.REGULAR) {
+            return "";
+        }
+        return promotion.getName();
+    }
+
+    @Override
+    public String toString() {
+        return quantities.entrySet().stream()
+                .map(entry ->
+                        String.join(" ", "-", name, formattedPrice(), formattedQuantity(entry.getValue()),
+                                formattedPromotion(entry.getKey()))
+                ).collect(Collectors.joining("\n"));
     }
 }
