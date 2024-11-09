@@ -31,4 +31,11 @@ public class Receipt {
     public void calcPromotionDiscount() {
         promotionDiscount = freeItems.stream().mapToInt(o -> o.price() * o.quantity()).sum();
     }
+
+    public void calcMembershipDiscount() {
+        int sum = orderItems.stream()
+                .filter(o -> o.productType() == ProductType.REGULAR)
+                .mapToInt(o -> o.price() * o.quantity()).sum();
+        membershipDiscount = Math.min(sum / 100 * 30, 8000);
+    }
 }
