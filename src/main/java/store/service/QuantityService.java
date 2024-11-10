@@ -28,6 +28,7 @@ public class QuantityService {
         Map<ProductType, Integer> purchaseQuantity = new HashMap<>();
         if (confirm.equals("Y")) {
             purchaseQuantity.put(ProductType.PROMOTION, promotionStock);
+            purchaseQuantity.put(ProductType.CHANGE, changeStock);
             purchaseQuantity.put(ProductType.REGULAR, item.quantity() - promotionStock);
             return purchaseQuantity;
         }

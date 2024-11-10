@@ -3,6 +3,7 @@ package store.model;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import store.dto.ProductDto;
@@ -42,7 +43,9 @@ public class Product {
     }
 
     public int getTotalQuantity() {
-        return quantities.values().stream().mapToInt(Integer::intValue).sum();
+        return quantities.entrySet().stream()
+                .filter(entry -> entry.getKey() != ProductType.CHANGE)
+                .mapToInt(Entry::getValue).sum();
     }
 
     public int getQuantityByKey(ProductType productType) {

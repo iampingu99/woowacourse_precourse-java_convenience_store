@@ -31,6 +31,9 @@ public class StoreController {
             Map<ProductType, Integer> purchaseQuantities
                     = quantityController.getPurchasePromotionQuantity(product, orderItem, promotionStock);
             for (Entry<ProductType, Integer> quantities : purchaseQuantities.entrySet()) {
+                if (quantities.getKey() == ProductType.CHANGE) {
+                    continue;
+                }
                 product.purchase(quantities.getKey(), quantities.getValue());
             }
             posController.productScan(receipt, purchaseQuantities, product);

@@ -24,10 +24,13 @@ public class Receipt {
     }
 
     public int getMembershipDiscount() {
-        int sum = purchaseProducts.stream()
+        int change = purchaseProducts.stream()
+                .mapToInt(product -> product.getPrice() * product.getQuantityByKey(ProductType.CHANGE))
+                .sum();
+        int regular = purchaseProducts.stream()
                 .mapToInt(product -> product.getPrice() * product.getQuantityByKey(ProductType.REGULAR))
                 .sum();
-        return Math.min(sum / 100 * 30, 8000);
+        return Math.min(Math.max(change, regular) / 100 * 30, 8000);
     }
 
     public List<Product> getPurchaseProducts() {
