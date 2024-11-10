@@ -2,6 +2,7 @@ package lab.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import lab.dto.ReceiptDto;
 import lab.model.Product;
 import lab.model.ProductType;
 import lab.model.Promotion;
@@ -15,6 +16,18 @@ public class PosService {
         this.receipts = receipts;
     }
 
+    public ReceiptDto createReceiptDto(String confirm) {
+        int totalAmount = receipts.getTotalAmount();
+        int promotionDiscount = receipts.getPromotionDiscount();
+        int membershipDiscount = 0;
+        if (confirm.equals("Y")) {
+            membershipDiscount = receipts.getMembershipDiscount();
+        }
+        int realAmount = totalAmount - promotionDiscount - membershipDiscount;
+        return new ReceiptDto(receipts.getPurchaseProducts(), receipts.getFreeProducts(), totalAmount,
+                promotionDiscount, membershipDiscount, realAmount);
+    }
+
     public void addPurchaseProduct(Map<ProductType, Integer> purchaseQuantity, Product product) {
         Product purchaseProduct = Product.of(product, purchaseQuantity);
         receipts.addPurchaseProducts(purchaseProduct);
@@ -22,7 +35,7 @@ public class PosService {
 
     public int getFreeProductCount(Map<ProductType, Integer> purchaseQuantity, Product product) {
         Promotion promotion = product.getPromotion();
-        int purchasePromotionQuantity = purchaseQuantity.get(ProductType.PROMOTION);
+        int purchasePromotionQuantity = purchaseQuantity.getOrDefault(ProductType.PROMOTION, 0);
         return promotion.calcFreeProductCount(purchasePromotionQuantity);
     }
 
