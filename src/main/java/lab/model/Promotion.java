@@ -1,6 +1,7 @@
 package lab.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Promotion {
     private final String name;
@@ -45,5 +46,10 @@ public class Promotion {
                 Integer.parseInt(fields[2]),
                 LocalDate.parse(fields[3]),
                 LocalDate.parse(fields[4]));
+    }
+
+    boolean isAvailable(LocalDateTime dateTimes) {
+        LocalDate date = dateTimes.toLocalDate();
+        return !date.isBefore(start_date) && !date.isAfter(end_date);
     }
 }
