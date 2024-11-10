@@ -1,43 +1,29 @@
 package store.model;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Stock {
-    private final List<Product> products;
+    private final Map<String, Product> products;
 
-    public Stock(List<Product> products) {
+    public Stock(Map<String, Product> products) {
         this.products = products;
     }
 
-    public List<Product> getProducts() {
+    public Map<String, Product> getProducts() {
         return products;
     }
 
-    public List<Product> getProductByName(String productName) {
-        return products.stream()
-                .filter(product -> product.getName().equals(productName))
-                .toList();
-    }
-
-    public int calcProductQuantity(String productName) {
-        return products.stream()
-                .filter(product -> productName.equals(product.getName()))
-                .mapToInt(Product::getQuantity)
-                .sum();
-    }
-
-    public int calcPromotionQuantity(String productName) {
-        return products.stream()
-                .filter(product -> productName.equals(product.getName()) && product.getPromotion() != null)
-                .mapToInt(Product::getQuantity)
-                .findFirst().orElse(0);
+    public Optional<Product> findByProductName(String productName) {
+        return Optional.ofNullable(products.get(productName));
     }
 
     @Override
     public String toString() {
-        return products.stream()
+        return products.values().stream()
                 .map(Product::toString)
                 .collect(Collectors.joining("\n"));
     }
 }
+

@@ -1,4 +1,4 @@
-package lab.service;
+package store.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,12 +11,13 @@ import lab.model.Product;
 import lab.model.ProductType;
 import lab.model.Promotion;
 import lab.model.Stock;
+import lab.service.StockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class StockServiceTest {
 
-    private StockService stockService;
+    private lab.service.StockService stockService;
 
     @BeforeEach
     void setUp() {

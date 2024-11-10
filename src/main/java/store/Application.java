@@ -1,20 +1,21 @@
 package store;
 
 import java.util.List;
-import lab.controller.InputController;
-import lab.controller.PosController;
-import lab.controller.QuantityController;
-import lab.controller.StoreController;
-import lab.model.OrderItem;
-import lab.model.Receipt;
-import lab.model.Stock;
-import lab.repository.ProductRepository;
-import lab.repository.PromotionRepository;
-import lab.service.PosService;
-import lab.service.StockFactory;
-import lab.service.StockService;
-import lab.utils.FileReader;
-import lab.view.OutputView;
+import store.controller.InputController;
+import store.controller.PosController;
+import store.controller.QuantityController;
+import store.controller.StoreController;
+import store.model.OrderItem;
+import store.model.Receipt;
+import store.model.Stock;
+import store.repository.ProductRepository;
+import store.repository.PromotionRepository;
+import store.service.PosService;
+import store.service.StockFactory;
+import store.service.StockService;
+import store.utils.FileReader;
+import store.view.OutputView;
+
 
 public class Application {
     public static void main(String[] args) {

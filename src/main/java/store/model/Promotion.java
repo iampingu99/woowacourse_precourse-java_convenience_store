@@ -1,7 +1,8 @@
 package store.model;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.time.LocalDateTime;
 
 public class Promotion {
     private final String name;
@@ -18,7 +19,27 @@ public class Promotion {
         this.end_date = end_date;
     }
 
-    public static Promotion of(String record) {
+    public String getName() {
+        return name;
+    }
+
+    public int getBuy() {
+        return buy;
+    }
+
+    public int getGet() {
+        return get;
+    }
+
+    public LocalDate getStart_date() {
+        return start_date;
+    }
+
+    public LocalDate getEnd_date() {
+        return end_date;
+    }
+
+    public static Promotion from(String record) {
         String[] fields = record.split(",");
         return new Promotion(
                 fields[0],
@@ -28,19 +49,22 @@ public class Promotion {
                 LocalDate.parse(fields[4]));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Promotion promotion)) {
-            return false;
-        }
-        return Objects.equals(name, promotion.name);
+    public boolean isAvailable(LocalDateTime dateTimes) {
+        LocalDate date = dateTimes.toLocalDate();
+        return !date.isBefore(start_date) && !date.isAfter(end_date);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
+    public int calcFreeProductCount(int purchasePromotionQuantity) {
+        if (isAvailable(DateTimes.now())) {
+            return purchasePromotionQuantity / (buy + get);
+        }
+        return 0;
+    }
+
+    public boolean qualifiesForFreeProduct(int purchasePromotionQuantity) {
+        if (isAvailable(DateTimes.now())) {
+            return purchasePromotionQuantity % (buy + get) == buy;
+        }
+        return false;
     }
 }

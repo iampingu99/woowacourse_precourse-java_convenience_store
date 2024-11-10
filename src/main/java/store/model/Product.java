@@ -1,52 +1,80 @@
 package store.model;
 
 import java.text.NumberFormat;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import store.dto.ProductDto;
 
 public class Product {
     private final String name;
     private final int price;
-    private int quantity;
-    private final String promotion;
+    private final Map<ProductType, Integer> quantities;
+    private Promotion promotion;
 
-    public Product(String name, int price, int quantity, String promotion) {
+    public Product(String name, int price) {
         this.name = name;
         this.price = price;
-        this.quantity = quantity;
+        this.quantities = new HashMap<>();
+    }
+
+    private Product(String name, int price, Map<ProductType, Integer> quantities, Promotion promotion) {
+        this.name = name;
+        this.price = price;
+        this.quantities = quantities;
         this.promotion = promotion;
     }
 
-    public static Product from(String record) {
-        String[] fields = record.split(",");
-        String promotion = null;
-        if (!fields[3].equals("null")) {
-            promotion = fields[3];
-        }
-        return new Product(
-                fields[0],
-                Integer.parseInt(fields[1]),
-                Integer.parseInt(fields[2]),
-                promotion);
+    public static Product of(Product product, Map<ProductType, Integer> quantities) {
+        return new Product(product.name, product.price, quantities, product.promotion);
+    }
+
+    public static Product of(ProductDto record, Map<String, Promotion> promotions) {
+        Product product = new Product(record.name(), record.price());
+        ProductType productType = ProductType.from(record.promotion());
+        product.addQuantity(productType, record.quantity());
+
+        Optional<Promotion> promotion = Optional.ofNullable(promotions.get(record.promotion()));
+        promotion.ifPresent(product::setPromotion);
+
+        return product;
+    }
+
+    public int getTotalQuantity() {
+        return quantities.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    public int getQuantityByKey(ProductType productType) {
+        return quantities.getOrDefault(productType, 0);
     }
 
     public String getName() {
         return name;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public String getPromotion() {
-        return promotion;
-    }
-
     public int getPrice() {
         return price;
     }
 
-    public void purchase(int quantity) {
-        this.quantity -= quantity;
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public Map<ProductType, Integer> getQuantities() {
+        return quantities;
+    }
+
+    public void addQuantity(ProductType productType, int quantity) {
+        quantities.put(productType, quantity);
+    }
+
+    public void purchase(ProductType productType, int quantity) {
+        quantities.put(productType, quantities.get(productType) - quantity);
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
     }
 
     private String formattedPrice() {
@@ -54,41 +82,26 @@ public class Product {
         return formatter.format(price) + "원";
     }
 
-    private String formattedQuantity() {
+    private String formattedQuantity(int quantity) {
         if (quantity == 0) {
             return "재고 없음";
         }
         return quantity + "개";
     }
 
-    private String formattedPromotion() {
-        if (promotion == null) {
+    private String formattedPromotion(ProductType productType) {
+        if (productType == ProductType.REGULAR) {
             return "";
         }
-        return promotion;
+        return promotion.getName();
     }
 
     @Override
     public String toString() {
-        return String.join(" ", "-", name, formattedPrice(), formattedQuantity(), formattedPromotion());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Product product)) {
-            return false;
-        }
-        return price == product.price
-                && quantity == product.quantity
-                && Objects.equals(name, product.name)
-                && Objects.equals(promotion, product.promotion);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, price, quantity, promotion);
+        return quantities.entrySet().stream()
+                .map(entry ->
+                        String.join(" ", "-", name, formattedPrice(), formattedQuantity(entry.getValue()),
+                                formattedPromotion(entry.getKey()))
+                ).collect(Collectors.joining("\n"));
     }
 }

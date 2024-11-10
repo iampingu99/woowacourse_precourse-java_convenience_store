@@ -1,4 +1,4 @@
-package lab.service;
+package store.service;
 
 import static camp.nextstep.edu.missionutils.test.Assertions.assertSimpleTest;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,6 +10,7 @@ import lab.model.Product;
 import lab.model.ProductType;
 import lab.model.Promotion;
 import lab.model.Receipt;
+import lab.service.PosService;
 import org.junit.jupiter.api.Test;
 
 class PosServiceTest {
@@ -23,7 +24,7 @@ class PosServiceTest {
             Product product = new Product("콜라", 1000);
 
             Receipt receipt = new Receipt();
-            PosService posService = new PosService(receipt);
+            lab.service.PosService posService = new lab.service.PosService(receipt);
             posService.addPurchaseProduct(purchaseQuantities, product);
 
             assertThat(receipt.getPurchaseProducts().get(0).getQuantities()).isEqualTo(purchaseQuantities);
@@ -41,7 +42,7 @@ class PosServiceTest {
             product.setPromotion(promotion);
 
             Receipt receipt = new Receipt();
-            PosService posService = new PosService(receipt);
+            lab.service.PosService posService = new lab.service.PosService(receipt);
             posService.addFreeProduct(purchaseQuantities, product);
 
             assertThat(receipt.getFreeProducts().get(0).getQuantities().get(ProductType.PROMOTION)).isEqualTo(3);
@@ -62,7 +63,7 @@ class PosServiceTest {
             Product energyBar = new Product("에너지바", 2000);
 
             Receipt receipt = new Receipt();
-            PosService posService = new PosService(receipt);
+            lab.service.PosService posService = new PosService(receipt);
 
             posService.addPurchaseProduct(colaPurchaseQuantities, cola);
             posService.addPurchaseProduct(energyBarPurchaseQuantities, energyBar);
