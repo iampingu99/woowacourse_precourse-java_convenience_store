@@ -3,6 +3,7 @@ package lab.model;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Product {
@@ -14,6 +15,17 @@ public class Product {
     public Product(String name, int price) {
         this.name = name;
         this.price = price;
+    }
+
+    public static Product of(ProductRecord record, Map<String, Promotion> promotions) {
+        Product product = new Product(record.name(), record.price());
+        ProductType productType = ProductType.from(record.promotion());
+        product.addQuantity(productType, record.quantity());
+
+        Optional<Promotion> promotion = Optional.ofNullable(promotions.get(record.promotion()));
+        promotion.ifPresent(product::setPromotion);
+
+        return product;
     }
 
     public String getName() {
