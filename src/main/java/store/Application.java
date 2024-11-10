@@ -11,6 +11,7 @@ import store.model.Stock;
 import store.repository.ProductRepository;
 import store.repository.PromotionRepository;
 import store.service.PosService;
+import store.service.QuantityService;
 import store.service.StockFactory;
 import store.service.StockService;
 import store.utils.FileReader;
@@ -27,12 +28,12 @@ public class Application {
         StockFactory stockFactory = new StockFactory(productRepository, promotionRepository);
         Stock stock = stockFactory.createStock();
 
-        PosController posController = new PosController(new PosService(new Receipt()));
-        QuantityController quantityController = new QuantityController();
+        InputController inputController = new InputController();
+
+        PosController posController = new PosController(inputController, new PosService(new Receipt()));
+        QuantityController quantityController = new QuantityController(inputController, new QuantityService());
         StoreController storeController = new StoreController(posController, quantityController,
                 new StockService(stock));
-
-        InputController inputController = new InputController();
 
         while (true) {
             try {
