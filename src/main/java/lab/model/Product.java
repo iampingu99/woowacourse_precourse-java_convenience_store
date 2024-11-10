@@ -19,6 +19,17 @@ public class Product {
         this.quantities = new HashMap<>();
     }
 
+    private Product(String name, int price, Map<ProductType, Integer> quantities, Promotion promotion) {
+        this.name = name;
+        this.price = price;
+        this.quantities = quantities;
+        this.promotion = promotion;
+    }
+
+    public static Product of(Product product, Map<ProductType, Integer> quantities) {
+        return new Product(product.name, product.price, quantities, product.promotion);
+    }
+
     public static Product of(ProductRecord record, Map<String, Promotion> promotions) {
         Product product = new Product(record.name(), record.price());
         ProductType productType = ProductType.from(record.promotion());
