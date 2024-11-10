@@ -1,5 +1,6 @@
 package lab.model;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -48,8 +49,15 @@ public class Promotion {
                 LocalDate.parse(fields[4]));
     }
 
-    boolean isAvailable(LocalDateTime dateTimes) {
+    public boolean isAvailable(LocalDateTime dateTimes) {
         LocalDate date = dateTimes.toLocalDate();
         return !date.isBefore(start_date) && !date.isAfter(end_date);
+    }
+
+    public int calcFreeProductCount(int purchasePromotionQuantity) {
+        if (isAvailable(DateTimes.now())) {
+            return purchasePromotionQuantity / (buy + get);
+        }
+        return 0;
     }
 }
