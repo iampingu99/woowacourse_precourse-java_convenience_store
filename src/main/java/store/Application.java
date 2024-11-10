@@ -6,7 +6,7 @@ import lab.controller.PosController;
 import lab.controller.QuantityController;
 import lab.controller.StoreController;
 import lab.model.OrderItem;
-import lab.model.Receipts;
+import lab.model.Receipt;
 import lab.model.Stock;
 import lab.repository.ProductRepository;
 import lab.repository.PromotionRepository;
@@ -26,7 +26,7 @@ public class Application {
         StockFactory stockFactory = new StockFactory(productRepository, promotionRepository);
         Stock stock = stockFactory.createStock();
 
-        PosController posController = new PosController(new PosService(new Receipts()));
+        PosController posController = new PosController(new PosService(new Receipt()));
         QuantityController quantityController = new QuantityController();
         StoreController storeController = new StoreController(posController, quantityController,
                 new StockService(stock));

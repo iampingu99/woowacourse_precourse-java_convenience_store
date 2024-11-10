@@ -3,8 +3,8 @@ package lab.service;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lab.dto.ProductDto;
 import lab.model.Product;
-import lab.model.ProductRecord;
 import lab.model.Promotion;
 import lab.model.Stock;
 import lab.repository.ProductRepository;
@@ -12,17 +12,17 @@ import lab.repository.PromotionRepository;
 
 public class StockFactory {
 
-    private final List<ProductRecord> productRecords;
+    private final List<ProductDto> productDtos;
     private final Map<String, Promotion> promotions;
 
     public StockFactory(ProductRepository productRepository, PromotionRepository promotionRepository) {
-        this.productRecords = productRepository.loadProducts();
+        this.productDtos = productRepository.loadProducts();
         this.promotions = promotionRepository.loadPromotions();
     }
 
     public Stock createStock() {
-        Map<String, Product> products = productRecords.stream().collect(Collectors.toMap(
-                ProductRecord::name,
+        Map<String, Product> products = productDtos.stream().collect(Collectors.toMap(
+                ProductDto::name,
                 productRecord -> Product.of(productRecord, promotions),
                 this::mergeProducts
         ));

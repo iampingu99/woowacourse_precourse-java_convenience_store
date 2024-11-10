@@ -4,42 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Receipt {
-    private final List<PurchaseItem> orderItems = new ArrayList<>();
-    private final List<PurchaseItem> freeItems = new ArrayList<>();
-    int totalAmount = 0;
-    int promotionDiscount = 0;
-    int membershipDiscount = 0;
-    int realAmount = 0;
+    List<Product> purchaseProducts = new ArrayList<>();
+    List<Product> freeProducts = new ArrayList<>();
 
-    public void purchase(Product product, ProductType productType, int quantity) {
-        product.purchase(productType, quantity);
-        PurchaseItem purchaseItem = PurchaseItem.of(productType, product.getName(), product.getPrice(), quantity);
-        orderItems.add(purchaseItem);
+    public void addPurchaseProducts(Product product) {
+        purchaseProducts.add(product);
     }
 
-    public void addFreeItem(Product product, Promotion promotion, int purchasePromotionQuantity) {
-        int freeProductQuantity = purchasePromotionQuantity / (promotion.getBuy() + promotion.getGet());
-        PurchaseItem purchaseItem = PurchaseItem.of(ProductType.PROMOTION, product.getName(), product.getPrice(),
-                freeProductQuantity);
-        freeItems.add(purchaseItem);
+    public void addFreeProducts(Product product) {
+        freeProducts.add(product);
     }
 
-    public void calcTotalAmount() {
-        totalAmount = orderItems.stream().mapToInt(o -> o.price() * o.quantity()).sum();
+    public int getTotalAmount() {
+        return purchaseProducts.stream().mapToInt(product -> product.getTotalQuantity() * product.getPrice()).sum();
     }
 
-    public void calcPromotionDiscount() {
-        promotionDiscount = freeItems.stream().mapToInt(o -> o.price() * o.quantity()).sum();
+    public int getPromotionDiscount() {
+        return freeProducts.stream().mapToInt(product -> product.getTotalQuantity() * product.getPrice()).sum();
     }
 
-    public void calcMembershipDiscount() {
-        int sum = orderItems.stream()
-                .filter(o -> o.productType() == ProductType.REGULAR)
-                .mapToInt(o -> o.price() * o.quantity()).sum();
-        membershipDiscount = Math.min(sum / 100 * 30, 8000);
+    public int getMembershipDiscount() {
+        int sum = purchaseProducts.stream()
+                .mapToInt(product -> product.getPrice() * product.getQuantityByKey(ProductType.REGULAR))
+                .sum();
+        return Math.min(sum / 100 * 30, 8000);
     }
 
-    public void calcRealAmount() {
-        realAmount = totalAmount - promotionDiscount - membershipDiscount;
+    public List<Product> getPurchaseProducts() {
+        return purchaseProducts;
+    }
+
+    public List<Product> getFreeProducts() {
+        return freeProducts;
     }
 }

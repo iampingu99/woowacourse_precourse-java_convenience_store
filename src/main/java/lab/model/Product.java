@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lab.dto.ProductDto;
 
 public class Product {
     private final String name;
@@ -29,7 +30,7 @@ public class Product {
         return new Product(product.name, product.price, quantities, product.promotion);
     }
 
-    public static Product of(ProductRecord record, Map<String, Promotion> promotions) {
+    public static Product of(ProductDto record, Map<String, Promotion> promotions) {
         Product product = new Product(record.name(), record.price());
         ProductType productType = ProductType.from(record.promotion());
         product.addQuantity(productType, record.quantity());

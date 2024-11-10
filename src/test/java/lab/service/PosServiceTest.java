@@ -9,7 +9,7 @@ import lab.dto.ReceiptDto;
 import lab.model.Product;
 import lab.model.ProductType;
 import lab.model.Promotion;
-import lab.model.Receipts;
+import lab.model.Receipt;
 import org.junit.jupiter.api.Test;
 
 class PosServiceTest {
@@ -22,11 +22,11 @@ class PosServiceTest {
             purchaseQuantities.put(ProductType.REGULAR, 5);
             Product product = new Product("콜라", 1000);
 
-            Receipts receipts = new Receipts();
-            PosService posService = new PosService(receipts);
+            Receipt receipt = new Receipt();
+            PosService posService = new PosService(receipt);
             posService.addPurchaseProduct(purchaseQuantities, product);
 
-            assertThat(receipts.getPurchaseProducts().get(0).getQuantities()).isEqualTo(purchaseQuantities);
+            assertThat(receipt.getPurchaseProducts().get(0).getQuantities()).isEqualTo(purchaseQuantities);
         });
     }
 
@@ -40,11 +40,11 @@ class PosServiceTest {
             Promotion promotion = Promotion.from("탄산2+1,2,1,2024-01-01,2024-12-31");
             product.setPromotion(promotion);
 
-            Receipts receipts = new Receipts();
-            PosService posService = new PosService(receipts);
+            Receipt receipt = new Receipt();
+            PosService posService = new PosService(receipt);
             posService.addFreeProduct(purchaseQuantities, product);
 
-            assertThat(receipts.getFreeProducts().get(0).getQuantities().get(ProductType.PROMOTION)).isEqualTo(3);
+            assertThat(receipt.getFreeProducts().get(0).getQuantities().get(ProductType.PROMOTION)).isEqualTo(3);
         });
     }
 
@@ -61,8 +61,8 @@ class PosServiceTest {
             energyBarPurchaseQuantities.put(ProductType.REGULAR, 5);
             Product energyBar = new Product("에너지바", 2000);
 
-            Receipts receipts = new Receipts();
-            PosService posService = new PosService(receipts);
+            Receipt receipt = new Receipt();
+            PosService posService = new PosService(receipt);
 
             posService.addPurchaseProduct(colaPurchaseQuantities, cola);
             posService.addPurchaseProduct(energyBarPurchaseQuantities, energyBar);

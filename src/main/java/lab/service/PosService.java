@@ -6,31 +6,31 @@ import lab.dto.ReceiptDto;
 import lab.model.Product;
 import lab.model.ProductType;
 import lab.model.Promotion;
-import lab.model.Receipts;
+import lab.model.Receipt;
 
 public class PosService {
 
-    private final Receipts receipts;
+    private final Receipt receipt;
 
-    public PosService(Receipts receipts) {
-        this.receipts = receipts;
+    public PosService(Receipt receipt) {
+        this.receipt = receipt;
     }
 
     public ReceiptDto createReceiptDto(String confirm) {
-        int totalAmount = receipts.getTotalAmount();
-        int promotionDiscount = receipts.getPromotionDiscount();
+        int totalAmount = receipt.getTotalAmount();
+        int promotionDiscount = receipt.getPromotionDiscount();
         int membershipDiscount = 0;
         if (confirm.equals("Y")) {
-            membershipDiscount = receipts.getMembershipDiscount();
+            membershipDiscount = receipt.getMembershipDiscount();
         }
         int realAmount = totalAmount - promotionDiscount - membershipDiscount;
-        return new ReceiptDto(receipts.getPurchaseProducts(), receipts.getFreeProducts(), totalAmount,
+        return new ReceiptDto(receipt.getPurchaseProducts(), receipt.getFreeProducts(), totalAmount,
                 promotionDiscount, membershipDiscount, realAmount);
     }
 
     public void addPurchaseProduct(Map<ProductType, Integer> purchaseQuantity, Product product) {
         Product purchaseProduct = Product.of(product, purchaseQuantity);
-        receipts.addPurchaseProducts(purchaseProduct);
+        receipt.addPurchaseProducts(purchaseProduct);
     }
 
     public int getFreeProductCount(Map<ProductType, Integer> purchaseQuantity, Product product) {
@@ -44,6 +44,6 @@ public class PosService {
         Map<ProductType, Integer> freeQuantities = new HashMap<>();
         freeQuantities.put(ProductType.PROMOTION, freeProductCount);
         Product freeProduct = Product.of(product, freeQuantities);
-        receipts.addFreeProducts(freeProduct);
+        receipt.addFreeProducts(freeProduct);
     }
 }

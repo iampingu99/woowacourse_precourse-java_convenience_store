@@ -2,7 +2,7 @@ package lab.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import lab.model.ProductRecord;
+import lab.dto.ProductDto;
 import lab.utils.FileReader;
 
 public class ProductRepository {
@@ -13,10 +13,10 @@ public class ProductRepository {
     public ProductRepository(FileReader fileReader) {
         this.fileReader = fileReader;
     }
-    
-    public List<ProductRecord> loadProducts() {
-        List<ProductRecord> products = new ArrayList<>();
-        fileReader.loadData(PRODUCTS_FILE, line -> products.add(ProductRecord.from(line)));
+
+    public List<ProductDto> loadProducts() {
+        List<ProductDto> products = new ArrayList<>();
+        fileReader.loadData(PRODUCTS_FILE, line -> products.add(ProductDto.from(line)));
         return products;
     }
 }
