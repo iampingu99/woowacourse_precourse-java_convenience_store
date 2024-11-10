@@ -3,7 +3,6 @@ package lab.model;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,12 +45,8 @@ public class Product {
     }
 
     public int getQuantityByKey(ProductType productType) {
-        return quantities.entrySet().stream()
-                .filter(entry -> entry.getKey() == productType)
-                .map(Entry::getValue)
-                .mapToInt(Integer::intValue).sum();
+        return quantities.getOrDefault(productType, 0);
     }
-
 
     public String getName() {
         return name;
