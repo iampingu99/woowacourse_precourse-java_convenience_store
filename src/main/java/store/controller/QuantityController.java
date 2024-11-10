@@ -24,9 +24,9 @@ public class QuantityController {
         if (promotionStock > orderItem.quantity()) {
             if (product.getPromotion().qualifiesForFreeProduct(orderItem.quantity())) {
                 String confirm = inputController.confirmAddFreeProduct(product);
-                return quantityService.promotionPurchase(orderItem, confirm);
+                return quantityService.promotionPurchase(product, orderItem, confirm);
             }
-            return quantityService.promotionPurchase(orderItem, "N");
+            return quantityService.promotionPurchase(product, orderItem, "N");
         }
         int changeStock = quantityService.calculateNonPromotionQuantity(product.getPromotion(), promotionStock,
                 orderItem.quantity());

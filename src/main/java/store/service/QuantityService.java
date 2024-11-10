@@ -3,6 +3,7 @@ package store.service;
 import java.util.HashMap;
 import java.util.Map;
 import store.model.OrderItem;
+import store.model.Product;
 import store.model.ProductType;
 import store.model.Promotion;
 
@@ -14,13 +15,16 @@ public class QuantityService {
         return purchaseQuantity;
     }
 
-    public Map<ProductType, Integer> promotionPurchase(OrderItem item, String confirm) {
+    public Map<ProductType, Integer> promotionPurchase(Product product, OrderItem item, String confirm) {
         Map<ProductType, Integer> purchaseQuantity = new HashMap<>();
         if (confirm.equals("Y")) {
             purchaseQuantity.put(ProductType.PROMOTION, item.quantity() + 1);
             return purchaseQuantity;
         }
         purchaseQuantity.put(ProductType.PROMOTION, item.quantity());
+        int changeStock = calculateNonPromotionQuantity(product.getPromotion(),
+                item.quantity(), item.quantity());
+        purchaseQuantity.put(ProductType.CHANGE, changeStock);
         return purchaseQuantity;
     }
 
