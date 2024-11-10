@@ -3,18 +3,20 @@ package lab.model;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Product {
     private final String name;
     private final int price;
-    private final Map<ProductType, Integer> quantities = new HashMap<>();
+    private final Map<ProductType, Integer> quantities;
     private Promotion promotion;
 
     public Product(String name, int price) {
         this.name = name;
         this.price = price;
+        this.quantities = new HashMap<>();
     }
 
     public static Product of(ProductRecord record, Map<String, Promotion> promotions) {
@@ -27,6 +29,18 @@ public class Product {
 
         return product;
     }
+
+    public int getTotalQuantity() {
+        return quantities.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    public int getQuantityByKey(ProductType productType) {
+        return quantities.entrySet().stream()
+                .filter(entry -> entry.getKey() == productType)
+                .map(Entry::getValue)
+                .mapToInt(Integer::intValue).sum();
+    }
+
 
     public String getName() {
         return name;
