@@ -60,4 +60,11 @@ public class Promotion {
         }
         return 0;
     }
+
+    public boolean qualifiesForFreeProduct(int purchasePromotionQuantity) {
+        if (isAvailable(DateTimes.now())) {
+            return purchasePromotionQuantity % (buy + get) == buy;
+        }
+        return false;
+    }
 }
