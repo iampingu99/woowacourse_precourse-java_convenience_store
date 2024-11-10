@@ -53,4 +53,12 @@ class StockServiceTest {
         assertThatThrownBy(() -> stockService.getProductOrThrow("사이다"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 재고_수량을_초과해서_구매하려는_경우_예외가_발생한다() {
+        assertThatThrownBy(() -> {
+            Product foundProduct = stockService.getProductOrThrow("콜라");
+            stockService.getQuantitiesOrThrow(foundProduct, 21);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
 }
