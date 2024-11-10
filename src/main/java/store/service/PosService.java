@@ -10,13 +10,7 @@ import store.model.Receipt;
 
 public class PosService {
 
-    private final Receipt receipt;
-
-    public PosService(Receipt receipt) {
-        this.receipt = receipt;
-    }
-
-    public ReceiptDto createReceiptDto(String confirm) {
+    public ReceiptDto createReceiptDto(Receipt receipt, String confirm) {
         int totalAmount = receipt.getTotalAmount();
         int promotionDiscount = receipt.getPromotionDiscount();
         int membershipDiscount = 0;
@@ -28,7 +22,7 @@ public class PosService {
                 promotionDiscount, membershipDiscount, realAmount);
     }
 
-    public void addPurchaseProduct(Map<ProductType, Integer> purchaseQuantity, Product product) {
+    public void addPurchaseProduct(Receipt receipt, Map<ProductType, Integer> purchaseQuantity, Product product) {
         Product purchaseProduct = Product.of(product, purchaseQuantity);
         receipt.addPurchaseProducts(purchaseProduct);
     }
@@ -39,7 +33,7 @@ public class PosService {
         return promotion.calcFreeProductCount(purchasePromotionQuantity);
     }
 
-    public void addFreeProduct(Map<ProductType, Integer> purchaseQuantity, Product product) {
+    public void addFreeProduct(Receipt receipt, Map<ProductType, Integer> purchaseQuantity, Product product) {
         int freeProductCount = getFreeProductCount(purchaseQuantity, product);
         Map<ProductType, Integer> freeQuantities = new HashMap<>();
         freeQuantities.put(ProductType.PROMOTION, freeProductCount);

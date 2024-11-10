@@ -6,7 +6,6 @@ import store.controller.PosController;
 import store.controller.QuantityController;
 import store.controller.StoreController;
 import store.model.OrderItem;
-import store.model.Receipt;
 import store.model.Stock;
 import store.repository.ProductRepository;
 import store.repository.PromotionRepository;
@@ -30,7 +29,7 @@ public class Application {
 
         InputController inputController = new InputController();
 
-        PosController posController = new PosController(inputController, new PosService(new Receipt()));
+        PosController posController = new PosController(inputController, new PosService());
         QuantityController quantityController = new QuantityController(inputController, new QuantityService());
         StoreController storeController = new StoreController(posController, quantityController,
                 new StockService(stock));

@@ -4,6 +4,7 @@ import java.util.Map;
 import store.dto.ReceiptDto;
 import store.model.Product;
 import store.model.ProductType;
+import store.model.Receipt;
 import store.service.PosService;
 
 public class PosController {
@@ -16,15 +17,15 @@ public class PosController {
         this.posService = posService;
     }
 
-    public ReceiptDto issueReceipt() {
+    public ReceiptDto issueReceipt(Receipt receipt) {
         String confirm = inputController.confirmApplyPromotion();
-        return posService.createReceiptDto(confirm);
+        return posService.createReceiptDto(receipt, confirm);
     }
 
-    public void productScan(Map<ProductType, Integer> purchaseQuantity, Product product) {
-        posService.addPurchaseProduct(purchaseQuantity, product);
+    public void productScan(Receipt receipt, Map<ProductType, Integer> purchaseQuantity, Product product) {
+        posService.addPurchaseProduct(receipt, purchaseQuantity, product);
         if (purchaseQuantity.getOrDefault(ProductType.PROMOTION, 0) > 0) {
-            posService.addFreeProduct(purchaseQuantity, product);
+            posService.addFreeProduct(receipt, purchaseQuantity, product);
         }
     }
 }

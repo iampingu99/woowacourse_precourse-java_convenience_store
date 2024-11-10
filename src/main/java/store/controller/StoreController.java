@@ -7,6 +7,7 @@ import store.dto.ReceiptDto;
 import store.model.OrderItem;
 import store.model.Product;
 import store.model.ProductType;
+import store.model.Receipt;
 import store.service.StockService;
 
 public class StoreController {
@@ -22,6 +23,7 @@ public class StoreController {
     }
 
     public void run(List<OrderItem> orderItems) {
+        Receipt receipt = new Receipt();
         for (OrderItem orderItem : orderItems) {
             Product product = stockService.getProductOrThrow(orderItem.name());
             stockService.validateQuantity(product, orderItem.quantity());
@@ -31,9 +33,9 @@ public class StoreController {
             for (Entry<ProductType, Integer> quantities : purchaseQuantities.entrySet()) {
                 product.purchase(quantities.getKey(), quantities.getValue());
             }
-            posController.productScan(purchaseQuantities, product);
+            posController.productScan(receipt, purchaseQuantities, product);
         }
-        ReceiptDto receiptDto = posController.issueReceipt();
+        ReceiptDto receiptDto = posController.issueReceipt(receipt);
         System.out.println(receiptDto.getView());
     }
 }
