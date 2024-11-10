@@ -22,7 +22,7 @@ public class QuantityController {
             return quantityService.regularPurchase(orderItem);
         }
         if (promotionStock > orderItem.quantity()) {
-            if (product.getPromotion().qualifiesForFreeProduct(promotionStock)) {
+            if (product.getPromotion().qualifiesForFreeProduct(orderItem.quantity())) {
                 String confirm = inputController.confirmAddFreeProduct(product);
                 return quantityService.promotionPurchase(orderItem, confirm);
             }
