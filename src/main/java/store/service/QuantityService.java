@@ -36,7 +36,7 @@ public class QuantityService {
             purchaseQuantity.put(ProductType.REGULAR, item.quantity() - promotionStock);
             return purchaseQuantity;
         }
-        purchaseQuantity.put(ProductType.PROMOTION, promotionStock - changeStock);
+        purchaseQuantity.put(ProductType.PROMOTION, item.quantity() - changeStock);
         return purchaseQuantity;
     }
 
