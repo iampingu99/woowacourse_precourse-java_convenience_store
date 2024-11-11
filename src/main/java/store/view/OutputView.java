@@ -1,6 +1,7 @@
 package store.view;
 
 
+import lab.dto.ReceiptDto;
 import store.model.Stock;
 
 public class OutputView {
@@ -18,5 +19,9 @@ public class OutputView {
 
     public static void printError(Exception exception) {
         System.out.println(ERROR + exception.getMessage() + TRY_AGAIN);
+    }
+
+    public static void printReceipt(ReceiptDto receiptDto) {
+        System.out.println(receiptDto.getView());
     }
 }
