@@ -1,7 +1,7 @@
 package store.view;
 
 
-import lab.dto.ReceiptDto;
+import store.dto.ReceiptDto;
 import store.model.Stock;
 
 public class OutputView {

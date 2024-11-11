@@ -7,17 +7,16 @@ import camp.nextstep.edu.missionutils.test.Assertions;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import lab.model.Product;
-import lab.model.ProductType;
-import lab.model.Promotion;
-import lab.model.Stock;
-import lab.service.StockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import store.model.Product;
+import store.model.ProductType;
+import store.model.Promotion;
+import store.model.Stock;
 
 class StockServiceTest {
 
-    private lab.service.StockService stockService;
+    private StockService stockService;
 
     @BeforeEach
     void setUp() {

@@ -5,13 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-import lab.dto.ReceiptDto;
-import lab.model.Product;
-import lab.model.ProductType;
-import lab.model.Promotion;
-import lab.model.Receipt;
-import lab.service.PosService;
 import org.junit.jupiter.api.Test;
+import store.dto.ReceiptDto;
+import store.model.Product;
+import store.model.ProductType;
+import store.model.Promotion;
+import store.model.Receipt;
 
 class PosServiceTest {
 
@@ -24,8 +23,8 @@ class PosServiceTest {
             Product product = new Product("콜라", 1000);
 
             Receipt receipt = new Receipt();
-            lab.service.PosService posService = new lab.service.PosService(receipt);
-            posService.addPurchaseProduct(purchaseQuantities, product);
+            PosService posService = new PosService();
+            posService.addPurchaseProduct(receipt, purchaseQuantities, product);
 
             assertThat(receipt.getPurchaseProducts().get(0).getQuantities()).isEqualTo(purchaseQuantities);
         });
@@ -42,8 +41,8 @@ class PosServiceTest {
             product.setPromotion(promotion);
 
             Receipt receipt = new Receipt();
-            lab.service.PosService posService = new lab.service.PosService(receipt);
-            posService.addFreeProduct(purchaseQuantities, product);
+            PosService posService = new PosService();
+            posService.addFreeProduct(receipt, purchaseQuantities, product);
 
             assertThat(receipt.getFreeProducts().get(0).getQuantities().get(ProductType.PROMOTION)).isEqualTo(3);
         });
@@ -63,23 +62,23 @@ class PosServiceTest {
             Product energyBar = new Product("에너지바", 2000);
 
             Receipt receipt = new Receipt();
-            lab.service.PosService posService = new PosService(receipt);
+            PosService posService = new PosService();
 
-            posService.addPurchaseProduct(colaPurchaseQuantities, cola);
-            posService.addPurchaseProduct(energyBarPurchaseQuantities, energyBar);
+            posService.addPurchaseProduct(receipt, colaPurchaseQuantities, cola);
+            posService.addPurchaseProduct(receipt, energyBarPurchaseQuantities, energyBar);
 
-            posService.addFreeProduct(colaPurchaseQuantities, cola);
+            posService.addFreeProduct(receipt, colaPurchaseQuantities, cola);
 
-            ReceiptDto receiptDto = posService.createReceiptDto("Y");
+            ReceiptDto receiptDto = posService.createReceiptDto(receipt, "Y");
 
             assertThat(receiptDto.getView()).contains(
-                    "===========W 편의점=============",
+                    "==============W 편의점================",
                     "상품명\t\t수량\t금액",
                     "콜라\t\t3 \t3,000",
                     "에너지바\t\t5 \t10,000",
-                    "===========증\t정=============",
+                    "=============증\t정===============",
                     "콜라\t\t1",
-                    "==============================",
+                    "====================================",
                     "총구매액\t\t8\t13,000",
                     "행사할인\t\t\t-1,000",
                     "멤버십할인\t\t\t-3,000",
