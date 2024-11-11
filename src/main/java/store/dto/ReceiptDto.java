@@ -51,12 +51,12 @@ public record ReceiptDto(
 
     public String getView() {
         return String.join("\n",
-                "===========W 편의점=============",
+                "==============W 편의점================",
                 "상품명\t\t수량\t금액",
                 purchaseProductsView(),
-                "===========증\t정=============",
+                "=============증\t정===============",
                 freeProductsView(),
-                "==============================",
+                "====================================",
                 totalAmountView(),
                 promotionDiscountView(),
                 membershipDiscountView(),
